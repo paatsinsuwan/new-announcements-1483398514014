@@ -1,11 +1,11 @@
-# Node.js Starter Overview
+# New Announcements for IBM Cloud
 
-The Node.js Starter demonstrates a simple, reusable Node.js web application based on the Express framework.
+Aggregator for [IBM Cloud - What's new][http://www.ibm.com/cloud-computing/learn-more/new/] page
 
 ## Run the app locally
 
 1. [Install Node.js][]
-2. Download and extract the starter code from the Bluemix UI
+2. Clone
 3. cd into the app directory
 4. Run `npm install` to install the app's dependencies
 5. Run `npm start` to start the app
