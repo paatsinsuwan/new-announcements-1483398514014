@@ -1,6 +1,6 @@
-# New Announcements for IBM Cloud
+# News aggregator for IBM Cloud /learn-more/new
 
-Aggregator for [IBM Cloud - What's new][http://www.ibm.com/cloud-computing/learn-more/new/] page
+Aggregate data from 2 Wordpress RSS feeds 
 
 ## Run the app locally
 
