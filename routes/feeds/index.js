@@ -56,18 +56,44 @@ router.use('/by-month', function(req, res, next){
     feedDataItems = feedDataItems.concat(data.rss.channel.item);
   })
   .done(function(){
+    console.log("in done");
     var grouped = _.groupBy(feedDataItems, function(o){
       return new Date(o.pubDate).getMonth();
     });
-    _.forEach(grouped, function(o){
-      o = _.orderBy(o, function(oo){
-        return new Date(oo);
-      });
+    var groupedByYear = _.groupBy(feedDataItems, function(o){
+      return new Date(o.pubDate).getFullYear();
     });
+
+
+
+    
+    // _.forEach(grouped, function(o){
+    //   o = _.orderBy(o, function(oo){
+    //     return new Date(oo);
+    //   });
+    // });
     res.header('Content-Type', 'application/json')
     .send(JSON.stringify(grouped));
   });
 });
+
+router.use('/new', function (req, res, next) {
+  feedDataItems = [];
+  getPromises(bluemixUrl).then(function(data){
+    feedDataItems = feedDataItems.concat(data.rss.channel.item);
+    return getPromises(middlewareUrl);
+  })
+  .then(function(data){
+    feedDataItems = feedDataItems.concat(data.rss.channel.item);
+  })
+  .done(function(){
+    var sorted = _.orderBy(feedDataItems, 'DESC', function(item){
+      return new Date(item.pubDate);
+    });
+    res.header('Content-Type', 'application/json')
+    .send(JSON.stringify(sorted));
+  });
+})
 
 router.use('/', function(req, res, next){
   feedDataItems = [];
