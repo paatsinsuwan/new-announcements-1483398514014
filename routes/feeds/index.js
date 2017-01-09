@@ -87,8 +87,19 @@ router.use('/new', function (req, res, next) {
     feedDataItems = feedDataItems.concat(data.rss.channel.item);
   })
   .done(function(){
-    var sorted = _.orderBy(feedDataItems, 'DESC', function(item){
-      return new Date(item.pubDate);
+    var sorted = feedDataItems.sort(function(a, b){
+      var aa = new Date(a.pubDate);
+      var bb = new Date(b.pubDate);
+      if( aa.getTime() !== bb.getTime()){
+        if(aa.getTime() < bb.getTime()){
+          return 1;
+        }
+        if(aa.getTime() > bb.getTime()){
+          return -1;
+        }
+      }
+      return 0;
+
     });
     res.header('Content-Type', 'application/json')
     .send(JSON.stringify(sorted));
@@ -98,10 +109,13 @@ router.use('/new', function (req, res, next) {
 router.use('/', function(req, res, next){
   feedDataItems = [];
   getPromises(bluemixUrl).then(function(data){
+
+    console.log("bluemix : " + data.rss.channel.item.length);
     feedDataItems = feedDataItems.concat(data.rss.channel.item);
     return getPromises(middlewareUrl);
   })
   .then(function(data){
+    console.log("CA : " + data.rss.channel.item.length);
     feedDataItems = feedDataItems.concat(data.rss.channel.item);
   })
   .done(function(){
