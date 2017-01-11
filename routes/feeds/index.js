@@ -121,6 +121,21 @@ var writeToFilePromise = function(writePath, data){
   return deferred.promise;
 }
 
+var readFilePromise = function(readPath){
+  var deferred = Q.defer();
+
+  fs.readFile(readPath, function(err, data){
+    if(err){
+      deferred.reject(new Error(err));
+    }
+    else {
+      deferred.resolve(data);
+    }
+  })
+
+  return deferred.promise; 
+}
+
 router.use('/by-month', function(req, res, next){
   feedDataItems = [];
   getPromises(bluemixUrl).then(function(data){
@@ -142,6 +157,55 @@ router.use('/by-month', function(req, res, next){
     .send(JSON.stringify(grouped));
   });
 });
+
+router.use('/new/v2/:page', function(req, res, next){
+  var sorted = [];
+  var promiseCalls = [];
+  var page = req.params.page || 1; 
+  var pageCount = 25;
+
+  if(bluemixAPIData.length === 0){
+    promiseCalls.push(readFilePromise(path.join(process.cwd(), "public", "files", "bluemix.json")))
+  }
+  if(CAAPIData.length === 0){
+    promiseCalls.push(readFilePromise(path.join(process.cwd(), "public", "files", "ca.json"))) 
+  }
+  Q.all(promiseCalls).then(function(results){
+    // console.log(results);
+    if(results.length !== 0){
+      bluemixAPIData = JSON.parse(results[0]);
+      CAAPIData = JSON.parse(results[1]);
+    }
+  })
+  .done(function(){
+    var i = (page === 1)? 0 : pageCount*(page-1);
+    for(i; i < pageCount*page; i ++){
+      if(bluemixAPIData[i] !== undefined){
+        sorted.push(bluemixAPIData[i]);  
+      }
+      if(CAAPIData[i] !== undefined){
+        sorted.push(CAAPIData[i]);
+      }
+    }
+    var sorted2 = sorted.sort(function(a, b){
+      var aa = new Date(a.date);
+      var bb = new Date(b.date);
+      if( aa.getTime() !== bb.getTime()){
+        if(aa.getTime() < bb.getTime()){
+          return 1;
+        }
+        if(aa.getTime() > bb.getTime()){
+          return -1;
+        }
+      }
+      return 0;
+
+    });
+    res.header('Content-Type', 'application/json')
+    .send(JSON.stringify(sorted2));  
+  })
+  
+})
 
 router.use('/new', function (req, res, next) {
   feedDataItems = [];
