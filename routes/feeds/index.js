@@ -161,8 +161,8 @@ router.use('/by-month', function(req, res, next){
 router.use('/new/v2/:page', function(req, res, next){
   var sorted = [];
   var promiseCalls = [];
-  var page = req.params.page || 1; 
-  var pageCount = 25;
+  var page = req.params.page; 
+  // var pageCount = 25;
 
   if(bluemixAPIData.length === 0){
     promiseCalls.push(readFilePromise(path.join(process.cwd(), "public", "files", "bluemix.json")))
@@ -178,15 +178,52 @@ router.use('/new/v2/:page', function(req, res, next){
     }
   })
   .done(function(){
-    var i = (page === 1)? 0 : pageCount*(page-1);
-    for(i; i < pageCount*page; i ++){
-      if(bluemixAPIData[i] !== undefined){
-        sorted.push(bluemixAPIData[i]);  
-      }
-      if(CAAPIData[i] !== undefined){
-        sorted.push(CAAPIData[i]);
-      }
+
+    var now = new Date();
+    var max = 2;
+    var bd = [];
+    var cd = [];
+
+
+    if(page !== 1){
+      console.log("hrer")
+      now.setMonth(now.getMonth()-(((page-1)*3)));
     }
+
+    console.log(now);
+
+    for(var i = 0; i <= max; i++){
+      var currentDate = new Date(now);
+      currentDate.setMonth(now.getMonth() - i);
+      console.log(currentDate);
+      var arr = bluemixAPIData.filter(function(item){
+        var currentItemDate = new Date(item.date);
+        return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
+      });
+      // console.log(bluemixAPIData.length);
+      bd = bd.concat(arr);
+      arr =  CAAPIData.filter(function(item){
+        var currentItemDate = new Date(item.date);
+        return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
+      });
+      cd = cd.concat(arr);
+    }
+
+    // console.log(bd)
+
+    sorted = sorted.concat(bd);
+    sorted = sorted.concat(cd);
+
+    // console.log(sorted);
+    // var i = (page === 1)? 0 : pageCount*(page-1);
+    // for(i; i < pageCount*page; i ++){
+    //   if(bluemixAPIData[i] !== undefined){
+    //     sorted.push(bluemixAPIData[i]);  
+    //   }
+    //   if(CAAPIData[i] !== undefined){
+    //     sorted.push(CAAPIData[i]);
+    //   }
+    // }
     var sorted2 = sorted.sort(function(a, b){
       var aa = new Date(a.date);
       var bb = new Date(b.date);
@@ -201,6 +238,7 @@ router.use('/new/v2/:page', function(req, res, next){
       return 0;
 
     });
+    // console.log(sorted2[0].date);
     res.header('Content-Type', 'application/json')
     .send(JSON.stringify(sorted2));  
   })
