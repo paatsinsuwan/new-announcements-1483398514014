@@ -182,6 +182,8 @@ router.use('/new/v2/:page', function(req, res, next){
     var bd = [];
     var cd = [];
 
+    console.log(now.getTimezoneOffset()/60)
+
 
     if(page !== 1){
       now.setMonth(now.getMonth()-(((page-1)*3)));
