@@ -182,23 +182,20 @@ router.use('/new/v2/:page', function(req, res, next){
     var bd = [];
     var cd = [];
 
-    console.log(now.getTimezoneOffset()/60)
-
-
     if(page !== 1){
       now.setMonth(now.getMonth()-(((page-1)*3)));
     }
 
     for(var i = 0; i <= max; i++){
       var currentDate = new Date(now);
-      currentDate.setMonth(now.getMonth() - i);
+      currentDate.setMonth(currentDate.getMonth() - i);
       var arr = bluemixAPIData.filter(function(item){
-        var currentItemDate = new Date(item.date);
+        var currentItemDate = new Date(item.date_gmt);
         return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
       });
       bd = bd.concat(arr);
       arr =  CAAPIData.filter(function(item){
-        var currentItemDate = new Date(item.date);
+        var currentItemDate = new Date(item.date_gmt);
         return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
       });
       cd = cd.concat(arr);
