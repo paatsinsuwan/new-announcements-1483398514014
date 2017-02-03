@@ -256,11 +256,11 @@ router.use('/new', function (req, res, next) {
 router.use('/getBluemix', function(req, res, next){
   promiseWhilePromise(getBluemixData, morePage).then(function(){
     console.log("done retrieving!!!!")
-    setFirstPage();
     return writeToFilePromise(path.join(process.cwd(), "public", "files", "bluemix.json"), JSON.stringify(bluemixAPIData));
   })
   .then(function(){
     console.log("file written");
+    setFirstPage();
   })
   .done(function(){
     res.send("done");
@@ -270,11 +270,11 @@ router.use('/getBluemix', function(req, res, next){
 router.use('/getCA', function(req, res, next){
   promiseWhilePromise(getCAData, morePage).then(function(){
     console.log("done retrieving!!!!")
-    setFirstPage();
     return writeToFilePromise(path.join(process.cwd(), "public", "files", "ca.json"), JSON.stringify(CAAPIData));
   })
   .then(function(){
     console.log("file written");
+    setFirstPage();
   })
   .done(function(){
     res.send("done");
