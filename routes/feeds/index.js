@@ -5,6 +5,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var Q = require('q');
+var cron = require('node-cron');
 var bluemixUrl = "https://www.ibm.com/blogs/bluemix/category/whats-new/feed/";
 var bluemixAPIUrl = "https://www.ibm.com/blogs/bluemix/wp-json/posts";
 var CAAPIUrl = "https://www.ibm.com/blogs/cloud-announcements/wp-json/posts";
@@ -218,6 +219,10 @@ router.use('/new/v2/:page', function(req, res, next){
       return 0;
 
     });
+    cron.schedule('5 */12 * * *', function(){
+      bluemixAPIData = [];
+      CAAPIData = [];
+    })
     res.header('Content-Type', 'application/json')
     .send(JSON.stringify(sorted2));  
   })
