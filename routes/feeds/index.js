@@ -219,7 +219,7 @@ router.use('/new/v2/:page', function(req, res, next){
       return 0;
 
     });
-    cron.schedule('5 */12 * * *', function(){
+    cron.schedule('5 9,11,13,15 * * *', function(){
       bluemixAPIData = [];
       CAAPIData = [];
     })
