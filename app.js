@@ -161,10 +161,12 @@ app.listen(appEnv.port, '0.0.0.0', function() {
       return writeToFilePromise(path.join(process.cwd(), "public", "files", "bluemix.json"), JSON.stringify(bluemixAPIData));
     })
     .then(function(){
+      bluemixAPIData = [];
       console.log("done written bluemix data - " + new Date());
       return writeToFilePromise(path.join(process.cwd(), "public", "files", "ca.json"), JSON.stringify(CAAPIData));
     })
     .done(function(){
+      CAAPIData = [];
       console.log("done written ca data - " + new Date());
       bmPage = 1;
       caPage = 1;
