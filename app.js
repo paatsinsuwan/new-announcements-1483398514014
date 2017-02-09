@@ -148,7 +148,7 @@ app.listen(appEnv.port, '0.0.0.0', function() {
   // print a message when the server starts listening
   console.log("server starting on " + appEnv.url);
   // start the cache file
-  cron.schedule('* 9,11,13,15 * * *', function(){
+  cron.schedule('0 9,11,13,15 * * *', function(){
     promiseWhilePromise(getBluemixData, moreBluemixPage).then(function(){
       console.log("done retrieve bluemix data - " + new Date());
     })
