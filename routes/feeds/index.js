@@ -195,12 +195,13 @@ router.use('/new/v2/:page', function(req, res, next){
         return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
       });
       bd = bd.concat(arr);
-      bd = _.uniqBy(bd, 'ID')
+      bd = _.uniqBy(bd, 'ID');
       arr =  CAAPIData.filter(function(item){
         var currentItemDate = new Date(item.date_gmt);
         return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
       });
       cd = cd.concat(arr);
+      cd = _.uniqBy(cd, 'ID');
     }
 
     sorted = sorted.concat(bd);
