@@ -189,19 +189,37 @@ router.use('/new/v2/:page', function(req, res, next){
 
     for(var i = 0; i <= max; i++){
       var currentDate = new Date(now);
+      var currentMonth = currentDate.getMonth() - i;
       currentDate.setMonth(currentDate.getMonth() - i);
       var arr = bluemixAPIData.filter(function(item){
         var currentItemDate = new Date(item.date_gmt);
-        return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
+        return (currentItemDate.getMonth() == currentMonth) && (currentItemDate.getFullYear() == currentDate.getFullYear());
       });
+      // console.log(currentDate);
       bd = bd.concat(arr);
       bd = _.uniqBy(bd, 'ID');
+      // console.log("Bluemix dates");
+      // bd.forEach(function(item){
+      //   console.log(item.date_gmt);
+      //   // if(item.date_gmt.match(/2017-02/)){
+      //   //   console.log(item.date_gmt);
+      //   // }
+      // })
+
       arr =  CAAPIData.filter(function(item){
         var currentItemDate = new Date(item.date_gmt);
-        return (currentItemDate.getMonth() == currentDate.getMonth())&&(currentItemDate.getFullYear() == currentDate.getFullYear());
+        return (currentItemDate.getMonth() == currentMonth) && (currentItemDate.getFullYear() == currentDate.getFullYear());
       });
       cd = cd.concat(arr);
       cd = _.uniqBy(cd, 'ID');
+
+      // console.log("CA dates");
+      // cd.forEach(function(item){
+      //   console.log(item.date_gmt);
+      //   // if(item.date_gmt.match(/2017-02/)){
+      //   //   console.log(item.date_gmt);
+      //   // }
+      // })
     }
 
     sorted = sorted.concat(bd);
